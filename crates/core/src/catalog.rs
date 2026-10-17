@@ -178,7 +178,8 @@ pub const SUITE: [CraftApp; 13] = [
         "Spreadsheets and data",
         AppGroup::New,
         [[0x1f, 0x9d, 0x55], [0x12, 0x70, 0x3a], [0x4f, 0xd6, 0x8a]],
-        "storytold/gridcraft",
+        // This fork installs GridCraft from ARMultimediait's fork (Italian, Windows 1:1 scale).
+        FORK_GRIDCRAFT_REPO,
     ),
     app(
         "cadcraft",
@@ -205,6 +206,9 @@ pub const SUITE: [CraftApp; 13] = [
         "storytold/figcraft",
     ),
 ];
+
+/// GridCraft's repository in this fork of the launcher. The other apps come from [`GITHUB_OWNER`].
+pub const FORK_GRIDCRAFT_REPO: &str = "ARMultimediait/gridcraft";
 
 /// ArtCraft's website.
 pub const WEBSITE_URL: &str = "https://getartcraft.com";
@@ -234,11 +238,13 @@ pub const LAUNCHER: CraftApp = app(
     "Installs and updates the Craft App Suite",
     AppGroup::New,
     [[0x0b, 0x0b, 0x0c], [0x0b, 0x0b, 0x0c], [0xf2, 0xf1, 0xee]],
-    "storytold/craft-launcher",
+    LAUNCHER_REPO,
 );
 
 /// The launcher's own repo, checked so it can say when a newer launcher is out.
-pub const LAUNCHER_REPO: &str = "storytold/craft-launcher";
+/// This fork updates itself from ARMultimediait's fork, so it never swaps itself for the upstream
+/// launcher (which would install upstream GridCraft again).
+pub const LAUNCHER_REPO: &str = "ARMultimediait/craft-launcher";
 /// The launcher's own asset stem.
 pub const LAUNCHER_ID: &str = "artcraft-launcher";
 
@@ -255,7 +261,8 @@ mod tests {
         ids.dedup();
         assert_eq!(ids.len(), SUITE.len());
         for a in &SUITE {
-            assert_eq!(a.repo, format!("storytold/{}", a.id));
+            let owner = if a.id == "gridcraft" { "ARMultimediait" } else { GITHUB_OWNER };
+            assert_eq!(a.repo, format!("{owner}/{}", a.id));
             assert_eq!(a.name.to_lowercase(), a.id);
         }
     }
